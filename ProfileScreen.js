@@ -1,61 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const buttonData = [
-  { title: 'Мои путешествия', iconName: 'plane', navigateTo: 'Put' },
-  { title: 'Мои попутчики', iconName: 'users', navigateTo: 'Poputchiki' },
-  { title: 'Привязанные карты', iconName: 'credit-card', navigateTo: 'Kart' },
-  { title: 'Проведенная аналитика', iconName: 'bar-chart', navigateTo: 'Anal' },
-  { title: 'Избранное', iconName: 'heart', onPress: () => console.log('Избранное было нажато') },
-];
 const profileData = {
   name: 'Иванов Иван',
   status: 'Путешественник',
   imageUri: 'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg',
 };
+
 const ProfileScreen = ({ navigation }) => {
   const navigateToSettings = () => {
     navigation.navigate('Nastroi');
   };
-    const navigateToKart = () => {
-      navigation.navigate('Kart'); 
-    };
-    const navigateToPut = () => {
-      navigation.navigate('Put'); 
-    };
-    const navigateToAnal = () => {
-      navigation.navigate('Anal'); 
-    };
-    
-      return (
-        <View style={styles.container}>
-          <View style={styles.headerContainer}>
-            <Image source={{ uri: profileData.imageUri }} style={styles.profileImage} />
-            <View style={styles.nameAndStatus}>
-              <Text style={styles.profileName}>{profileData.name}</Text>
-              <Text style={styles.profileStatus}>{profileData.status}</Text>
-            </View>
-            <TouchableOpacity onPress={navigateToSettings} style={styles.settingsIcon}>
-              <Icon name="cog" size={30} color="#333" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttonContainer}>
-            {buttonData.map(({ title, iconName, navigateTo, onPress }, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.customButton}
-                onPress={navigateTo ? () => navigation.navigate(navigateTo) : onPress}
-              >
-                <Icon name={iconName} size={20} color="#333" style={styles.buttonIcon} />
-                <Text>{title}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+
+  const [buttonData, setButtonData] = useState([]);
+
+  useEffect(() => {
+    fetch('http://10.131.57.171:8113/api/navigate/buttons')
+      .then(response => response.json())
+      .then(data => setButtonData(data.result)) 
+      .catch(error => console.error(error));
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Image source={{ uri: profileData.imageUri }} style={styles.profileImage} />
+        <View style={styles.nameAndStatus}>
+          <Text style={styles.profileName}>{profileData.name}</Text>
+          <Text style={styles.profileStatus}>{profileData.status}</Text>
         </View>
-      );
-    };
-    
+        <TouchableOpacity onPress={navigateToSettings} style={styles.settingsIcon}>
+          <Icon name="cog" size={30} color="#333" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.buttonContainer}>
+        {buttonData.map(({ title, iconName, navigateTo, onPress }, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.customButton}
+            onPress={navigateTo ? () => navigation.navigate(navigateTo) : onPress}
+          >
+            <Icon name={iconName} size={20} color="#333" style={styles.buttonIcon} />
+            <Text>{title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+};
+
 ProfileScreen.navigationOptions = ({ navigation }) => ({
   headerTitle: 'Профиль',
   headerLeft: () => (
@@ -64,10 +58,10 @@ ProfileScreen.navigationOptions = ({ navigation }) => ({
     </TouchableOpacity>
   ),
   headerRight: () => (
-    <TouchableOpacity onPress={() => console.log("Сохранено")} style={{ marginRight: 10 }}>
-      <Text style={{ fontSize: 16, color: "#333" }}>Сохранить</Text>
+    <TouchableOpacity onPress={() => console.log('Сохранено')} style={{ marginRight: 10 }}>
+      <Text style={{ fontSize: 16, color: '#333' }}>Сохранить</Text>
     </TouchableOpacity>
-  )
+  ),
 });
 
 const renderButton = (title, iconName) => (
@@ -75,7 +69,7 @@ const renderButton = (title, iconName) => (
     <Icon name={iconName} size={20} color="#333" style={styles.buttonIcon} />
     <Text>{title}</Text>
   </TouchableOpacity>
-)
+);
 
 const styles = StyleSheet.create({
   container: {

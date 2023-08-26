@@ -11,23 +11,19 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const cards = [
-  { image: require('./public/images/rectangle-27.png'), text: 'Карточка 1' },
-  { image: require('./public/images/rectangle-27.png'), text: 'Карточка 2' },
-  { image: require('./public/images/rectangle-27.png'), text: 'Карточка 3' },
-];
 const imageArray = [
-    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
-    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
-    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
-  ];
-  const cardInfo = [
-    { key: 'Направление', value: 'Москва - Санкт-Петербург' },
-    { key: 'Дата', value: '2023-08-26' },
-    { key: 'Транспорт', value: 'Поезд' },
-    { key: 'Стоимость', value: '$100' },
-  ];
-  
+  'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
+  'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
+  'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
+];
+
+const cardInfo = [
+  { key: 'Направление', value: 'Москва - Санкт-Петербург' },
+  { key: 'Дата', value: '2023-08-26' },
+  { key: 'Транспорт', value: 'Поезд' },
+  { key: 'Стоимость', value: '$100' },
+];
+
 const Card = ({ card, onPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress(card)}>
@@ -37,43 +33,58 @@ const Card = ({ card, onPress }) => {
   );
 };
 
-const CardModal = ({ isVisible, onClose, card }) => {
-    return (
-      <Modal visible={isVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Image source={card.image} style={styles.modalImage} />
-            <Text style={styles.modalTitle}>{card.text}</Text>
-            {cardInfo.map((item, index) => (
-  <Text key={index} style={styles.modalText}>
-    {item.key}: {item.value}
-  </Text>
-))}
+const CardModal = ({ isVisible, onClose, card, toggleFavorite }) => {
+  const handleToggleFavorite = () => {
+    toggleFavorite(card);
+  };
 
-      <View style={styles.inputContainer}>
-        {imageArray.map((imageUrl, index) => (
-          <Image key={index} source={{ uri: imageUrl }} style={styles.icon} />
-        ))}
-        <View style={styles.grayCircle}>
-          <Image
-            source={require('./public/images/rectangle-242.png')} 
-            style={styles.plusIcon}
-          />
+  return (
+    <Modal visible={isVisible} animationType="slide" transparent={true}>
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Image source={card.image} style={styles.modalImage} />
+          <Text style={styles.modalTitle}>{card.text}</Text>
+          {cardInfo.map((item, index) => (
+            <Text key={index} style={styles.modalText}>
+              {item.key}: {item.value}
+            </Text>
+          ))}
+
+          <View style={styles.inputContainer}>
+            {imageArray.map((imageUrl, index) => (
+              <Image key={index} source={{ uri: imageUrl }} style={styles.icon} />
+            ))}
+            <View style={styles.grayCircle}>
+              <Image
+                source={require('./public/images/rectangle-242.png')} 
+                style={styles.plusIcon}
+              />
+            </View>
+          </View>
+          <TouchableOpacity style={styles.favoriteButton} onPress={handleToggleFavorite}>
+            <Text style={styles.favoriteButtonText}>
+              {card.favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Text style={styles.closeButtonText}>Закрыть</Text>
+          </TouchableOpacity>
         </View>
       </View>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>Закрыть</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
-  
+    </Modal>
+  );
+};
+
+const initialCards = [
+  { image: require('./public/images/rectangle-27.png'), text: 'Карасная поляна', favorite: false },
+  { image: require('./public/images/rectangle-27.png'), text: 'Сочи', favorite: false },
+  { image: require('./public/images/rectangle-27.png'), text: 'Адлер', favorite: false },
+];
 
 const HomeScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cards, setCards] = useState(initialCards);
 
   const filteredCards = cards.filter(card =>
     card.text.toLowerCase().includes(searchText.toLowerCase())
@@ -87,6 +98,13 @@ const HomeScreen = () => {
 
   const closeModal = () => {
     setSelectedCard(null);
+  };
+
+  const toggleFavorite = cardToUpdate => {
+    const updatedCards = cards.map(c =>
+      c === cardToUpdate ? { ...c, favorite: !c.favorite } : c
+    );
+    setCards(updatedCards);
   };
 
   return (
@@ -103,18 +121,52 @@ const HomeScreen = () => {
         ))}
       </ScrollView>
       {selectedCard && (
-        <CardModal isVisible={!!selectedCard} onClose={closeModal} card={selectedCard} />
+        <CardModal
+          isVisible={!!selectedCard}
+          onClose={closeModal}
+          card={selectedCard}
+          toggleFavorite={toggleFavorite}
+        />
       )}
+      <TouchableOpacity
+        style={styles.heardButton}
+        onPress={() => navigation.navigate('Heart', { favoriteCards: cards.filter(c => c.favorite) })}
+      >
+        <Text style={styles.heardButtonText}>Избранное</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
     paddingTop: 40,
     backgroundColor: '#f5f5f5',
+  },
+  heardButton: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  heardButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  favoriteButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+    alignSelf: 'stretch', // Растягивает кнопку по ширине
+    alignItems: 'center',
+  },
+  favoriteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   searchInput: {
     width: '100%',

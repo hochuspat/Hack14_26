@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Image, FlatList, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 const PhotoCard = ({ photo }) => (
     <View style={styles.photoCardContainer}>
-      <Image source={{ uri: photo.url }} style={styles.photo} />
+      <Image source={{ uri: photo.imageUrl }} style={styles.photo} />
     </View>
   ); 
 const PhotoPage = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+    const [popularPhotos, setPopularPhotos] = useState([]);
 
+    
   const silhouettes = [
     'https://catherineasquithgallery.com/uploads/posts/2021-02/1614289550_95-p-chernii-chelovek-bez-fona-106.png',
     'https://catherineasquithgallery.com/uploads/posts/2021-02/1614289550_95-p-chernii-chelovek-bez-fona-106.png',
@@ -32,19 +34,13 @@ const PhotoPage = () => {
     }
   };
 
-  const popularPhotos = [
-    {
-      id: '1',
-      url: 'https://demotivation.ru/wp-content/uploads/2020/03/2019Girls___Beautyful_Girls_Beautiful_girl_in_a_white_dress_sitting_on_a_stone_in_the_water_135982_-2048x1365.jpg',
-      title: 'Силуэт человека на фоне заката',
-    },
-    {
-      id: '2',
-      url: 'https://sportishka.com/uploads/posts/2022-03/1646330829_3-sportishka-com-p-devushka-na-beregu-morya-turizm-krasivo-fo-9.jpg',
-      title: 'Силуэт человека на фоне города',
-    },
- 
-  ];
+  
+    useEffect(() => {
+      fetch('http://10.131.57.171:8113/api/photo/populars')
+        .then(response => response.json())
+        .then(data => setPopularPhotos(data.result)) 
+        .catch(error => console.error(error));
+    }, []);
 
   return (
     <View style={styles.container}>

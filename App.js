@@ -23,6 +23,7 @@ import Luch from './Luch';
 import Git from './Git'; 
 import Cho from './Cho'; 
 import S from './S'; 
+import Heart from './HeardScreen'; 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -95,6 +96,7 @@ const App = () => {
 <Stack.Screen name='Git' component={Git} options={{ headerShown:false}} />
 <Stack.Screen name='Cho' component={Cho} options={{ headerShown:false}} />
 <Stack.Screen name='S' component={S} options={{ headerShown:false}} />
+<Stack.Screen name='Heart' component={Heart} options={{ headerShown:false}} />
 </Stack.Navigator>
  </NavigationContainer>
   );

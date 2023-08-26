@@ -97,12 +97,12 @@ const cards = [
     { title: "Лучшее время", icon: "clock-o" },
   ];
   const places = [
-    { image: require('./public/images/rectangle-27.png'), name: "Место 1" },
-    { image: require('./public/images/rectangle-27.png'), name: "Место 2" },
-    { image: require('./public/images/rectangle-27.png'), name: "Место 3" },
+    { image: require('./public/images/rectangle-27.png'), name: "Красная поляна" },
+    { image: require('./public/images/rectangle-27.png'), name: "Сочи" },
+    { image: require('./public/images/rectangle-27.png'), name: "Краснодар" },
 ];
 const events = [
-    { image: require('./public/images/rectangle-27.png'), name: "Событие 1" },
+    { image: require('./public/images/rectangle-27.png'), name: " " },
     { image: require('./public/images/Group24.png'), name: " " },
 ];
 
