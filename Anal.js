@@ -4,7 +4,6 @@ import { VictoryChart, VictoryLine, VictoryAxis } from 'victory-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const data = [0, 10, 5, 20, 12, 15, 10];
 const color1 = 'hsl(200, 80%, 50%)';
 
 const NavBar = () => {
@@ -21,77 +20,94 @@ const NavBar = () => {
 };
 
 const GraphsPage = ({ navigation }) => {
-  const [activeGraph, setActiveGraph] = useState('visits'); // Default active graph
-  const [showReport, setShowReport] = useState(false); // State to control report visibility
+  const [activeGraph, setActiveGraph] = useState('visits');
+  const [showReport, setShowReport] = useState(false);
+
+  const graphData = [
+    {
+      id: 'visits',
+      title: 'Визиты',
+      data: [0, 10, 5, 20, 12, 15, 10],
+    },
+    {
+      id: 'visitors',
+      title: 'Посетители',
+      data: [5, 15, 8, 25, 18, 22, 17],
+    },
+  
+  ];
+
+  const renderGraph = (graphType) => {
+    const graph = graphData.find((g) => g.id === graphType);
+    if (graph) {
+      return (
+        <VictoryChart
+          domainPadding={{ x: 20, y: 20 }}
+          animate={{ duration: 1000, easing: 'bounce', delay: 500 }}
+          vertical
+          style={styles.victoryChart}
+        >
+          <VictoryLine
+            data={graph.data.map((y, x) => ({ x: graph.data.length - 1 - x, y }))}
+            style={{
+              data: { stroke: color1 },
+              parent: { transform: 'scaleY(-1)' },
+            }}
+          />
+          <VictoryAxis
+            dependentAxis
+            orientation="right"
+            style={{
+              axis: { stroke: color1 },
+              tickLabels: { fill: color1 },
+            }}
+          />
+        </VictoryChart>
+      );
+    }
+  };
 
   return (
     <ScrollView>
       <NavBar />
       <View style={styles.graphContainer}>
         <View style={styles.graphButtons}>
-          <TouchableOpacity
-            onPress={() => {
-              setActiveGraph('visits');
-              setShowReport(false); // Hide the report when switching to "Метрика"
-            }}
-            style={[
-              styles.button,
-              { backgroundColor: activeGraph === 'visits' ? '#2E8CE0' : '#FFFFFF' },
-            ]}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: activeGraph === 'visits' ? '#FFFFFF' : 'black',
+          {graphData.map((graph) => (
+            <TouchableOpacity
+              key={graph.id}
+              onPress={() => {
+                setActiveGraph(graph.id);
+                setShowReport(graph.id === 'reports');
               }}
+              style={[
+                styles.button,
+                { backgroundColor: activeGraph === graph.id ? '#2E8CE0' : '#FFFFFF' },
+              ]}
             >
-              Метрика
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setActiveGraph('reports');
-              setShowReport(true); // Show the report when switching to "Отчеты"
-            }}
-            style={[
-              styles.button,
-              { backgroundColor: activeGraph === 'reports' ? '#2E8CE0' : '#FFFFFF' },
-            ]}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: activeGraph === 'reports' ? '#FFFFFF' : 'black',
-              }}
-            >
-              Отчеты
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: activeGraph === graph.id ? '#FFFFFF' : 'black',
+                }}
+              >
+                {graph.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
         <View style={styles.graphContent}>
-          {/* Conditionally render graph or report based on activeGraph */}
-          {activeGraph === 'visits' && (
-            <React.Fragment>
-              <Text style={styles.graphTitle}>Визиты</Text>
-              {renderGraph('visits')}
-            </React.Fragment>
-          )}
-                    {activeGraph === 'visits' && (
-            <React.Fragment>
-              <Text style={styles.graphTitle}>Поситители</Text>
-              {renderGraph('visits')}
-            </React.Fragment>
-          )}
-          {activeGraph === 'reports' && showReport && (
-            <React.Fragment>
-              <View style={styles.reportContainer}>
-                <Text style={styles.graphTitle}>Отчеты</Text>
-                <Text>Детализация графика по дням</Text>
-              </View>
-              <Text style={styles.graphTitle}>График для отчетов</Text>
-              {renderGraph('reports')}
-            </React.Fragment>
-          )}
+          {graphData.map((graph) => (
+            activeGraph === graph.id && (
+              <React.Fragment key={graph.id}>
+                {showReport && <View style={styles.reportContainer}>
+                  <Text style={styles.graphTitle}>Отчеты</Text>
+                  <Text>Детализация графика по дням</Text>
+                </View>}
+                <Text style={styles.graphTitle}>{graph.title}</Text>
+                {renderGraph(graph.id)}
+              </React.Fragment>
+            )
+          ))}
         </View>
       </View>
     </ScrollView>
@@ -99,38 +115,7 @@ const GraphsPage = ({ navigation }) => {
 };
 
 
-const renderGraph = (graphType) => {
-  if (graphType === 'visits' || graphType === 'reports') {
-    return (
-      <VictoryChart
-        domainPadding={{ x: 20, y: 20 }}
-        animate={{ duration: 1000, easing: 'bounce', delay: 500 }}
-        vertical
-        style={styles.victoryChart}
-      >
-        <VictoryLine
-          data={data.map((y, x) => ({ x: data.length - 1 - x, y }))}
-          style={{
-            data: { stroke: color1 },
-            parent: { transform: 'scaleY(-1)' },
-          }}
-        />
-        <VictoryAxis
-          dependentAxis
-          orientation="right"
-          style={{
-            axis: { stroke: color1 },
-            tickLabels: { fill: color1 },
-          }}
-        />
-      </VictoryChart>
-    );
-  }
-};
-
-
 const styles = StyleSheet.create({
-  // Стили для компонентов
 
   navBar: {
     marginTop: 20,
@@ -173,7 +158,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   victoryChart: {
-    // Стили для VictoryChart
   },
   reportContainer: {
     padding: 20,

@@ -21,6 +21,13 @@ const imageArray = [
     'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
     'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
   ];
+  const cardInfo = [
+    { key: 'Направление', value: 'Москва - Санкт-Петербург' },
+    { key: 'Дата', value: '2023-08-26' },
+    { key: 'Транспорт', value: 'Поезд' },
+    { key: 'Стоимость', value: '$100' },
+  ];
+  
 const Card = ({ card, onPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress(card)}>
@@ -37,18 +44,19 @@ const CardModal = ({ isVisible, onClose, card }) => {
           <View style={styles.modalContent}>
             <Image source={card.image} style={styles.modalImage} />
             <Text style={styles.modalTitle}>{card.text}</Text>
-            <Text style={styles.modalText}>Направление: Москва - Санкт-Петербург</Text>
-            <Text style={styles.modalText}>Дата: 2023-08-26</Text>
-            <Text style={styles.modalText}>Транспорт: Поезд</Text>
-            <Text style={styles.modalText}>Стоимость: $100</Text>
-            <Text style={styles.subTitle}>Попутчики</Text>
+            {cardInfo.map((item, index) => (
+  <Text key={index} style={styles.modalText}>
+    {item.key}: {item.value}
+  </Text>
+))}
+
       <View style={styles.inputContainer}>
         {imageArray.map((imageUrl, index) => (
           <Image key={index} source={{ uri: imageUrl }} style={styles.icon} />
         ))}
         <View style={styles.grayCircle}>
           <Image
-            source={require('./public/images/rectangle-242.png')} // Замените путем к изображению
+            source={require('./public/images/rectangle-242.png')} 
             style={styles.plusIcon}
           />
         </View>

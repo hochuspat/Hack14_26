@@ -78,8 +78,8 @@ const App = () => {
 
   return (
     <NavigationContainer>
-<Stack.Navigator initialRouteName="MainTabs" headerMode="none">
-  <Stack.Screen name="MainTabs" component={BottomTabsComponent} />
+<Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>  
+<Stack.Screen name="MainTabs" component={BottomTabsComponent} />
   <Stack.Screen name="MapScreen" component={MapScreen} />
   <Stack.Screen name="ChatScreen" component={ChatScreen} />  
   <Stack.Screen name="Nastroi" component={Nastroi} options={{ headerShown: false }}/>
@@ -94,7 +94,7 @@ const App = () => {
 <Stack.Screen name='Git' component={Git} options={{ headerShown:false}} />
 <Stack.Screen name='Cho' component={Cho} options={{ headerShown:false}} />
 <Stack.Screen name='S' component={S} options={{ headerShown:false}} />
-  </Stack.Navigator>   
+</Stack.Navigator>
  </NavigationContainer>
   );
 }

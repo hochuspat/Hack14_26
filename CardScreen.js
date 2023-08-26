@@ -15,47 +15,48 @@ const AccordionItem = ({ title, children }) => {
 };
 
 const DropdownList = () => {
-  const [checkedItems, setCheckedItems] = useState([false, false, false]);
+  const [checkedItems, setCheckedItems] = useState([
+    [false, false, false],
+    [false, false, false],
+  ]);
 
-  const toggleItemCheck = index => {
+  const toggleItemCheck = (sectionIndex, itemIndex) => {
     const newCheckedItems = [...checkedItems];
-    newCheckedItems[index] = !newCheckedItems[index];
+    newCheckedItems[sectionIndex][itemIndex] = !newCheckedItems[sectionIndex][itemIndex];
     setCheckedItems(newCheckedItems);
   };
+
+  const sections = [
+    {
+      title: 'Документы',
+      items: ['Раздел 1', 'Раздел 2', 'Раздел 3'],
+    },
+    {
+      title: 'Другие документы',
+      items: ['Раздел 1', 'Раздел 2', 'Раздел 3'],
+    },
+  ];
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Стандартный список вещей</Text>
-      <AccordionItem title="Документы">
-        <View>
-          {['Раздел 1', 'Раздел 2', 'Раздел 3'].map((item, index) => (
-            <View key={index} style={styles.dropdownItem}>
-              <Text style={styles.itemText}>{item}</Text>
-              <Switch 
-                value={checkedItems[index]} 
-                onValueChange={() => toggleItemCheck(index)}
-                trackColor={{ false: "#cccccc", true: "#81b0ff" }}
-                thumbColor={checkedItems[index] ? "#1E62D0" : "#f4f3f4"}
-              />
-            </View>
-          ))}
-        </View>
-      </AccordionItem>
-      <AccordionItem title="Документы">
-        <View>
-          {['Раздел 1', 'Раздел 2', 'Раздел 3'].map((item, index) => (
-            <View key={index} style={styles.dropdownItem}>
-              <Text style={styles.itemText}>{item}</Text>
-              <Switch 
-                value={checkedItems[index]} 
-                onValueChange={() => toggleItemCheck(index)}
-                trackColor={{ false: "#cccccc", true: "#81b0ff" }}
-                thumbColor={checkedItems[index] ? "#1E62D0" : "#f4f3f4"}
-              />
-            </View>
-          ))}
-        </View>
-      </AccordionItem>
+      {sections.map((section, sectionIndex) => (
+        <AccordionItem key={sectionIndex} title={section.title}>
+          <View>
+            {section.items.map((item, itemIndex) => (
+              <View key={itemIndex} style={styles.dropdownItem}>
+                <Text style={styles.itemText}>{item}</Text>
+                <Switch
+                  value={checkedItems[sectionIndex][itemIndex]}
+                  onValueChange={() => toggleItemCheck(sectionIndex, itemIndex)}
+                  trackColor={{ false: '#cccccc', true: '#81b0ff' }}
+                  thumbColor={checkedItems[sectionIndex][itemIndex] ? '#1E62D0' : '#f4f3f4'}
+                />
+              </View>
+            ))}
+          </View>
+        </AccordionItem>
+      ))}
     </View>
   );
 };

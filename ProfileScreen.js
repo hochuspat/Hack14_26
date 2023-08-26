@@ -1,13 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Button, TouchableOpacity  } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+const buttonData = [
+  { title: 'Мои путешествия', iconName: 'plane', navigateTo: 'Put' },
+  { title: 'Мои попутчики', iconName: 'users', navigateTo: 'Poputchiki' },
+  { title: 'Привязанные карты', iconName: 'credit-card', navigateTo: 'Kart' },
+  { title: 'Проведенная аналитика', iconName: 'bar-chart', navigateTo: 'Anal' },
+  { title: 'Избранное', iconName: 'heart', onPress: () => console.log('Избранное было нажато') },
+];
+const profileData = {
+  name: 'Иванов Иван',
+  status: 'Путешественник',
+  imageUri: 'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg',
+};
 const ProfileScreen = ({ navigation }) => {
   const navigateToSettings = () => {
     navigation.navigate('Nastroi');
   };
-
-  
     const navigateToKart = () => {
       navigation.navigate('Kart'); 
     };
@@ -17,42 +27,35 @@ const ProfileScreen = ({ navigation }) => {
     const navigateToAnal = () => {
       navigation.navigate('Anal'); 
     };
-  return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Image 
-          source={{uri: 'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg'}}
-          style={styles.profileImage}
-        />
-        <View style={styles.nameAndStatus}>
-          <Text style={styles.profileName}>Иванов Иван</Text>
-          <Text style={styles.profileStatus}>Путешественник</Text>
+    
+      return (
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Image source={{ uri: profileData.imageUri }} style={styles.profileImage} />
+            <View style={styles.nameAndStatus}>
+              <Text style={styles.profileName}>{profileData.name}</Text>
+              <Text style={styles.profileStatus}>{profileData.status}</Text>
+            </View>
+            <TouchableOpacity onPress={navigateToSettings} style={styles.settingsIcon}>
+              <Icon name="cog" size={30} color="#333" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.buttonContainer}>
+            {buttonData.map(({ title, iconName, navigateTo, onPress }, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.customButton}
+                onPress={navigateTo ? () => navigation.navigate(navigateTo) : onPress}
+              >
+                <Icon name={iconName} size={20} color="#333" style={styles.buttonIcon} />
+                <Text>{title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-        <TouchableOpacity onPress={navigateToSettings} style={styles.settingsIcon}>
-          <Icon name="cog" size={30} color="#333" />
-        </TouchableOpacity>
-      </View>
-<View style={styles.buttonContainer}>
-<TouchableOpacity style={styles.customButton} onPress={navigateToPut}>
-          <Icon name="plane" size={20} color="#333" style={styles.buttonIcon} />
-          <Text>Мои путешествия</Text>
-        </TouchableOpacity>
-        {renderButton("Мои попутчики", "users")}
-        <TouchableOpacity style={styles.customButton} onPress={navigateToKart}>
-          <Icon name="credit-card" size={20} color="#333" style={styles.buttonIcon} />
-          <Text>Привязанные карты</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.customButton} onPress={navigateToAnal}>
-          <Icon name="bar-chart" size={20} color="#333" style={styles.buttonIcon} />
-          <Text>Проведенная аналитика</Text>
-        </TouchableOpacity>
-        
-        {renderButton("Избранное", "heart")}
-      </View>
-    </View>
-  );
-}
-
+      );
+    };
+    
 ProfileScreen.navigationOptions = ({ navigation }) => ({
   headerTitle: 'Профиль',
   headerLeft: () => (
