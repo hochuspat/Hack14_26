@@ -3,8 +3,8 @@ import { View,ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Switch,
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 const imageArray = [
-    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', // Замените путем к изображению
-    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', // Замените путем к изображению
+    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
+    'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
     'https://phonoteka.org/uploads/posts/2021-06/1624488210_50-phonoteka_org-p-yezhik-oboi-krasivo-50.jpg', 
   ];
 const FormScreen = () => {
